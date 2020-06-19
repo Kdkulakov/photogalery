@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block page_title %}
+Gallery
+{% endblock %}
+
+{% block page_styles %}
+{% endblock %}
+
+{% block page_content %}
+
+<section class="content">
+    <div class="row">
+        <!-- left column -->
+        <div class="col-md-12">
+          <!-- /.box -->
+          <div class="box">
+            <div class="box-header">
+              <h3 class="box-title">Список фоток</h3>
+
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table id="example1" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Название фото</th>
+                  <th>Производитель</th>
+                  <th>Модель камеры</th>
+                  <th>Размер файла</th>
+                  <th>Дата создания</th>
+                  <th>Дата загрузки</th>
+                    <th></th>
+                </tr>
+                </thead>
+              <tbody>
+                    {% for item in images %}
+                        {% include 'gallery/components/image.html' with image=item %}
+                    {% endfor %}
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th>#</th>
+                  <th>Название фото</th>
+                  <th>Производитель</th>
+                  <th>Модель камеры</th>
+                  <th>Размер файла</th>
+                  <th>Дата создания</th>
+                  <th>Дата загрузки</th>
+                    <th></th>
+                </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+          </div>
+        </div>
+</section>
+
+{% endblock %}
+
+{% block page_js %}
+<!--&lt;!&ndash; jQuery 3 &ndash;&gt;-->
+<!--<script src="{% static '/bower_components/jquery/dist/jquery.min.js' %}"></script>-->
+
+<script>
+  $(function () {
+    $('#example1').DataTable()
+    $('#example2').DataTable({
+      'paging'      : true,
+      'lengthChange': false,
+      'searching'   : false,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : false
+    })
+  })
+</script>
+{% endblock %}
+

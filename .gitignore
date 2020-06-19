@@ -1,0 +1,5 @@
+env
+.git
+.idea
+server/media/*
+server/db.sqlite3
