@@ -1,0 +1,12 @@
+.table td, .table thead th {
+    vertical-align: middle;
+}
+
+.form-create {
+    margin: 0 auto;
+}
+
+.form-create form {
+    display: flex;
+    flex-direction: column;
+}

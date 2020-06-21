@@ -1,6 +1,5 @@
-
 <tr role="row" class="even">
-  <td>{{image.pk}}</td>
+  <td><a href="/media/{{image.file_url}}"><img src="{{image.thumbnail.url}}" /></a></td>
   <td class="sorting_1">{{image.title}}</td>
   <td>{{image.manufacturer}}</td>
   <td>{{image.camera_model}}</td>
@@ -8,6 +7,9 @@
   <td>{{image.photo_created}}</td>
   <td>{{image.object_created}}</td>
 
-  <td style="text-align: center;"><button type="button" class="btn btn-danger btn-sm" onclick="location.href='{#% url 'products:delete' pk=product.pk %#}'">Удалить</button></td>
+  <td style="text-align: center;">
+    <button type="button" class="btn btn-danger btn-sm" onclick="location.href='{% url 'gallery:delete' pk=image.pk %}'">Удалить
+    </button>
+  </td>
 
 </tr>

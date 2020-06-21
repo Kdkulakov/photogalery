@@ -7,77 +7,88 @@ Gallery
 {% endblock %}
 
 {% block page_styles %}
+<link rel="stylesheet" href="{% static '/gallery/style.css'%}">
 {% endblock %}
 
 {% block page_content %}
 
 <section class="content">
-    <div class="row">
-        <!-- left column -->
-        <div class="col-md-12">
-          <!-- /.box -->
-          <div class="box">
-            <div class="box-header">
-              <h3 class="box-title">Список фоток</h3>
-
-            </div>
-            <!-- /.box-header -->
-            <div class="box-body">
-              <table id="example1" class="table table-bordered table-striped">
-                <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Название фото</th>
-                  <th>Производитель</th>
-                  <th>Модель камеры</th>
-                  <th>Размер файла</th>
-                  <th>Дата создания</th>
-                  <th>Дата загрузки</th>
-                    <th></th>
-                </tr>
-                </thead>
-              <tbody>
-                    {% for item in images %}
-                        {% include 'gallery/components/image.html' with image=item %}
+  <div class="row">
+    <div class="box">
+      <div class="box-header">
+        <h3 class="box-title">Загрузи фото</h3>
+      </div>
+      <div class="box-body">
+        <div class="form-create">
+          <form role="form" method="POST" enctype="multipart/form-data">
+              {% csrf_token %}
+              {% for field in form.visible_fields %}
+              <div class="form-group row">
+                  <label for="{{ field.name }}" class="col-sm-3 text-right control-label col-form-label">
+                      {{field.label }}</label>
+                  <div class="col-sm-9">
+                      {{field}}
+                      {{field.errors}}
+                  </div>
+              </div>
+              {% endfor %}
+                {% if form.errors %}
+              errr
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <p> {{ error }} </p>
+                        {% endfor %}
                     {% endfor %}
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th>#</th>
-                  <th>Название фото</th>
-                  <th>Производитель</th>
-                  <th>Модель камеры</th>
-                  <th>Размер файла</th>
-                  <th>Дата создания</th>
-                  <th>Дата загрузки</th>
-                    <th></th>
-                </tr>
-                </tfoot>
-              </table>
-            </div>
-          </div>
+                {% endif %}
+              <button type="submit" name="image_form"  class="btn btn-outline">Загрузить</button>
+          </form>
           </div>
         </div>
+
+  <div class="row">
+      <div class="col-md-12">
+        <div class="box">
+          <div class="box-header">
+            <h3 class="box-title">Список фоток</h3>
+          </div>
+          <div class="box-body">
+            <table id="example1" class="table table-bordered table-striped">
+              <thead>
+              <tr>
+                <th></th>
+                <th>Название фото</th>
+                <th>Производитель</th>
+                <th>Модель камеры</th>
+                <th>Размер файла</th>
+                <th>Дата создания</th>
+                <th>Дата загрузки</th>
+                <th></th>
+              </tr>
+              </thead>
+            <tbody class="table-data">
+            {% if images %}
+                  {% for item in images %}
+                      {% include 'gallery/components/image.html' with image=item %}
+                  {% endfor %}
+            {% else %}
+                <td colspan="8" style="text-align: center;">
+                    <h4>В вашей шикарной галереии нет ни одной фотки. Загружай скорее. &#8657;</h4>
+                </td>
+            {% endif %}
+            </tbody>
+
+            </table>
+          </div>
+
+        </div>
+        </div>
+      </div>
+      </div>
+      </div>
 </section>
 
 {% endblock %}
 
 {% block page_js %}
-<!--&lt;!&ndash; jQuery 3 &ndash;&gt;-->
-<!--<script src="{% static '/bower_components/jquery/dist/jquery.min.js' %}"></script>-->
-
-<script>
-  $(function () {
-    $('#example1').DataTable()
-    $('#example2').DataTable({
-      'paging'      : true,
-      'lengthChange': false,
-      'searching'   : false,
-      'ordering'    : true,
-      'info'        : true,
-      'autoWidth'   : false
-    })
-  })
-</script>
 {% endblock %}
 

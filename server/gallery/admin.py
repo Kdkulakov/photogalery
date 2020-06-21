@@ -9,6 +9,7 @@ class ImageAdmin(admin.ModelAdmin):
         'manufacturer',
         'camera_model',
         'file_url',
+        'thumbnail',
         'file_size',
         'object_created',
         'photo_created',
