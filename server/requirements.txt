@@ -1,9 +1,13 @@
 asgiref==3.2.10
+choicesenum==0.6.0
 Django==3.0.7
 django-appconf==1.0.4
+django-exiffield==2.1.0
 django-imagekit==4.0.2
+jsonfield2==3.1.0
 pilkit==2.0
 Pillow==7.1.2
+python-magic==0.4.18
 pytz==2020.1
 six==1.15.0
 sqlparse==0.3.1
