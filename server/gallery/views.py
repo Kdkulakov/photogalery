@@ -1,9 +1,10 @@
-from django.views.generic import ListView
 from .models import ImageModel
 from .forms import ImageModelForm
 from django.urls import reverse_lazy
-from django.shortcuts import render, redirect, get_list_or_404, get_object_or_404, HttpResponseRedirect
+from django.shortcuts import render, HttpResponseRedirect
 import magic
+import hashlib
+from functools import partial
 from django.forms import ValidationError
 
 
@@ -22,53 +23,61 @@ def valid_image_mimetype(fobject):
         return False
 
 
-class ImagesList(ListView):
-    """
-    Контроллер вывода списка изображений
-    """
-    model = ImageModel
-    template_name = 'gallery/list.html'
-    context_object_name = 'images'
-    success_url = reverse_lazy('gallery:images')
-    # paginate_by = "1"
+def hash_file(file, block_size=65536):
+    '''
+    функция создания hash из файла
+    '''
+    hasher = hashlib.md5()
+    for buf in iter(partial(file.read, block_size), b''):
+        hasher.update(buf)
 
-    def get_context_data(self, **kwargs):
-        context = super(ImagesList, self).get_context_data(**kwargs)
-        context['form'] = ImageModelForm()
-        return context
+    return hasher.hexdigest()
 
-    def post(self, request, *args, **kwargs):
-        form = ImageModelForm(request.POST, request.FILES)
 
+def gallery_list(request):
+    '''
+    Контероллер вывода списка изображений и формы загрузки
+    '''
+    context = {}
+    context['form'] = ImageModelForm(request.POST, request.FILES)
+
+    if request.method == 'GET':
+        context['images'] = ImageModel.objects.all()
+        return render(request, 'gallery/list.html', context)
+
+    if request.method == 'POST':
+        form = context['form']
         if form.is_valid():
+            # сохраняем файл предварително в базу, дабы получить данные из exif
             image_instance = form.save()
 
-            print(form)
-            print(image_instance)
-            print(request.POST)
+            hash_file_in_form = hash_file(image_instance.file_url)
+            if ImageModel.objects.filter(hash_of_file=hash_file_in_form):
+                print('EST V BAZE')
+                image_instance.delete()
+            else:
+                try:
+                    image_instance.manufacturer = image_instance.exif['Make']['val']
+                except Exception:
+                    pass
+                try:
+                    image_instance.camera_model = image_instance.exif['Model']['val']
+                except Exception:
+                    pass
+                try:
+                    image_instance.photo_created = image_instance.exif['CreateDate']['val']
+                except Exception:
+                    pass
+                image_instance.file_size = image_instance.filesize
 
-            try:
-                image_instance.manufacturer = image_instance.exif['Make']['val']
-            except Exception:
-                pass
-            try:
-                image_instance.camera_model = image_instance.exif['Model']['val']
-            except Exception:
-                pass
-            try:
-                image_instance.photo_created = image_instance.exif['CreateDate']['val']
-            except Exception:
-                pass
-
-            image_instance.file_size = image_instance.filesize
-            image_instance.save()
+                image_instance.hash_of_file = hash_file_in_form
+                image_instance.save()
 
             return HttpResponseRedirect(reverse_lazy('gallery:images'))
         else:
             print('Form not valide')
-            form = ImageModelForm()
-
-        return HttpResponseRedirect(reverse_lazy('gallery:images'))
+            context['images'] = ImageModel.objects.all()
+            return render(request, 'gallery/list.html', context)
 
 
 def image_delete(request, pk):

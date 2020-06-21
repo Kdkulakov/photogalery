@@ -1,9 +1,9 @@
 from django.urls import path
-from .views import ImagesList, image_delete
+from .views import gallery_list, image_delete
 
 app_name = 'gallery'
 
 urlpatterns = [
-    path('', ImagesList.as_view(), name='images'),
+    path('', gallery_list, name='images'),
     path('delete/<pk>', image_delete, name='delete'),
 ]

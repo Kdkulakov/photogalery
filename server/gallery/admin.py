@@ -6,6 +6,7 @@ from .models import ImageModel
 class ImageAdmin(admin.ModelAdmin):
     list_display = [
         'title',
+        'hash_of_file',
         'manufacturer',
         'camera_model',
         'file_url',

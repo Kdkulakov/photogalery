@@ -21,6 +21,10 @@ class ImageModel(models.Model):
         upload_to='images/%y/%m/%d/',
         verbose_name='файл'
     )
+    hash_of_file = models.CharField(
+        max_length=255,
+        editable=False,
+    )
     exif = ExifField(
         source='file_url',
     )
@@ -65,3 +69,4 @@ class ImageModel(models.Model):
         ordering = ['-object_created']
         verbose_name = "Фото"
         verbose_name_plural = "Фотки"
+

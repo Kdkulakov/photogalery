@@ -20,5 +20,5 @@ class ImageModelForm(forms.ModelForm):
     def clean_title(self):
         title = self.cleaned_data.get('title', '')
         if ImageModel.objects.filter(title=title):
-            raise ValidationError('There is already a file with that name on our system')
+            raise ValidationError('Файл с таким именем уже существует.')
         return title
